@@ -46,6 +46,9 @@ def filter_data(args, data):
 
 def split_data(args, data):
     # Splita í train, val, test, halda hlutföllum af environment í settunum
+    if (len(data) < 100):
+        return data, data, data
+    
     main, test = train_test_split(data, test_size=args.train_size, random_state=args.random_state, stratify=data['environment'])
     train, val = train_test_split(main, test_size=args.val_size, random_state=args.random_state, stratify=main['environment'])
 
