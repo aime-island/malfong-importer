@@ -64,7 +64,7 @@ def format_data(args, data):
 
     # Laga path á audio files og reikna filesize
     for _, row in new_data.iterrows():
-        row['wav_filename'] = row['wav_filename'].replace(":", "_")
+        #row['wav_filename'] = row['wav_filename'].replace(":", "_")
         row['wav_filename'] = args.wav_dir + '/' + row['wav_filename'] + '.wav'
         row['wav_filesize'] = os.path.getsize(row['wav_filename'])
     
