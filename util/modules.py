@@ -65,7 +65,7 @@ def format_data(args, data):
     # Laga path á audio files og reikna filesize
     for _, row in new_data.iterrows():
         row['wav_filename'] = row['wav_filename'].replace(":", "_")
-        row['wav_filename'] = args.wav_dir + '\\' + row['wav_filename'] + '.wav'
+        row['wav_filename'] = args.wav_dir + '/' + row['wav_filename'] + '.wav'
         row['wav_filesize'] = os.path.getsize(row['wav_filename'])
     
     return new_data
@@ -73,4 +73,4 @@ def format_data(args, data):
 def export_csv(args, data, name):
     # Exporta í csv
     data = format_data(args, data)
-    data.to_csv(args.export_dir + '\\' + name + '.csv', encoding='utf-8', index=None, header=True)
+    data.to_csv(args.export_dir + '/' + name + '.csv', encoding='utf-8', index=None, header=True)
