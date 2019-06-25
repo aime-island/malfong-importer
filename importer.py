@@ -12,7 +12,7 @@ def main():
     export_csv(args, test, 'test')
     print("Task done.")
     print("")
-    print("Three files created at: ", args.wav_dir)
+    print("Three files created at: ", args.export_dir)
 
 if __name__ == "__main__":
     args = parser.parse_args()
