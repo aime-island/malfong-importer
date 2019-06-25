@@ -1,0 +1,5 @@
+# Main training requirements
+argparse
+pandas
+imbalanced-learn
+numpy

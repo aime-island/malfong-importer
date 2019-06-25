@@ -1,0 +1,15 @@
+# Þetta er run skrá
+# train_size: hlutfall af heildargögnum
+# val_size: hlutfall af train size
+# noise_ratio: hlutfall af quiet data, 1.0 = jafn mikið í báðum
+
+python importer.py \
+	--input_file "info.txt" \
+	--export_dir "C:\Users\ojonsson\Downloads\malromur" \
+	--wav_dir "C:\Users\ojonsson\Downloads\malromur\correct" \
+	--sample_size 5000 \
+	--train_size 0.8 \
+	--val_size 0.1 \
+	--random_state 42 \
+	--noise_ratio 0.5 \
+	--skip_domains True \
