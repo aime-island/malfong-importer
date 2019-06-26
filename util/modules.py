@@ -68,6 +68,8 @@ def format_data(args, data):
         row['wav_filename'] = args.wav_dir + '/' + row['wav_filename'] + '.wav'
         row['wav_filesize'] = os.path.getsize(row['wav_filename'])
     
+    new_data['transcript'] = data['transcript'].lower()
+    
     return new_data
 
 def export_csv(args, data, name):
