@@ -58,7 +58,7 @@ def format_data(args, data):
     # Búa til nýtt dataframe með þeim dálkum sem við þurfum
     filesizes = np.zeros(len(data))
     new_data = pd.DataFrame(
-        pd.np.column_stack([data['name'], filesizes, data['transcript']]), 
+        pd.np.column_stack([data['name'], filesizes, data['transcript'].str.lower()]), 
         columns=['wav_filename', 'wav_filesize', 'transcript']
         )
 
@@ -67,8 +67,6 @@ def format_data(args, data):
         #row['wav_filename'] = row['wav_filename'].replace(":", "_")
         row['wav_filename'] = args.wav_dir + '/' + row['wav_filename'] + '.wav'
         row['wav_filesize'] = os.path.getsize(row['wav_filename'])
-    
-    new_data['transcript'] = data['transcript'].str.lower()
 
     return new_data
 
