@@ -17,8 +17,6 @@ def read_data(args):
 
     # Nota bara efni úr correct
     data = data.loc[data['classification'] == 'correct']
-    if (args.save_corpus):
-        data['transcript'].to_csv(args.export_dir + '/texti.txt', header=None, index=None, mode='a', encoding='utf-8')
     
     # Breyta quite vs noise í flokkabreytu
     data['environment'] = data['environment'].apply(lambda x: '1' if 'Quiet' in x else 0)
@@ -30,7 +28,10 @@ def filter_data(args, data):
     # Sleppa setningum með . í (lénum)
     if (args.skip_domains):
         filters = data[data['transcript'].str.contains(r'\.')].index
+        searchfor = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+        filters2 = data[data['transcript'].str.contains('|'.join(searchfor))].index
         data = data.drop(filters)
+        data = data.drop(filters2)
 
     # Stilla ratio af noisy audio
     #if (args.noise_ratio):
@@ -49,7 +50,10 @@ def filter_data(args, data):
     if (args.sample_size and len(data) > args.sample_size):
         data = data.sample(n=args.sample_size, random_state=args.random_state)
     
+    # Stilla stærð gagnasetts miðað við tíma
     elif (args.duration and data['duration'].sum() > args.duration):
+
+        # Shuffla gögnunum með random state og reseta indexes
         data = data.sample(frac=1, random_state=args.random_state)
         data = data.reset_index(drop=True)
         sum = 0
@@ -64,9 +68,11 @@ def filter_data(args, data):
 def split_data(args, data):
     # Splita í train, val, test, halda hlutföllum af environment í settunum
 
-    # Ef 
+    # Ef það er beðið um eina setningu skila eins í train, val og test
     if (len(data) == 1):
         return data, data, data
+
+    # Ef það er beðið um tíma, skipta í hlutfalli m.v. tíma
     elif (args.duration):
         train_seconds = args.duration * args.train_size
         val_seconds = train_seconds * args.val_size
@@ -85,9 +91,11 @@ def split_data(args, data):
                         data.drop(data.head(j+1).index, inplace=True)
                         test = data
                         return train, val, test
+    
+    # Ef það er ekki beðið um tímaskiptingu
     else:
-        main, test = train_test_split(data, test_size=1-args.train_size, random_state=args.random_state, stratify=data['environment'])
-        train, val = train_test_split(main, test_size=args.val_size, random_state=args.random_state, stratify=main['environment'])
+        main, test = train_test_split(data, test_size=1-args.train_size, random_state=args.random_state)
+        train, val = train_test_split(main, test_size=args.val_size, random_state=args.random_state)
         return train, val, test
 
 def format_data(args, data):
@@ -110,5 +118,4 @@ def format_data(args, data):
 def export_csv(args, data, name):
     # Exporta í csv
     data = format_data(args, data)
-
     data.to_csv(args.export_dir + '/' + name + '.csv', encoding='utf-8', index=None, header=True)
