@@ -56,10 +56,10 @@ def filter_data(args, data):
         for i, row in data.iterrows():
             sum += row['duration']
             if (sum > args.duration):
-                newData = data.head(i+1)
+                data = data.head(i+1)
                 break
     
-    return newData
+    return data
 
 def split_data(args, data):
     # Splita í train, val, test, halda hlutföllum af environment í settunum
