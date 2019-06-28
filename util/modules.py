@@ -118,4 +118,4 @@ def format_data(args, data):
 def export_csv(args, data, name):
     # Exporta í csv
     data = format_data(args, data)
-    data.to_csv(args.export_dir + '/' + name + '.csv', encoding='utf-16', index=None, header=True)
+    data.to_csv(args.export_dir + '/' + name + '.csv', encoding='utf-8-sig', index=None, header=True)
