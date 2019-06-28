@@ -32,7 +32,7 @@ def filter_data(args, data):
         filters2 = data[data['transcript'].str.contains('|'.join(searchfor))].index
         data = data.drop(filters)
         data = data.drop(filters2)
-        filters3 = data[data['transcript'].str.contains(u'\ufeff')]
+        filters3 = data[data['transcript'].str.contains(u'\ufeff')].index
         data = data.drop(filters3)
 
     # Stilla ratio af noisy audio
