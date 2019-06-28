@@ -17,7 +17,9 @@ def read_data(args):
 
     # Nota bara efni úr correct
     data = data.loc[data['classification'] == 'correct']
-
+    if (args.save_corpus):
+        data['transcript'].to_csv(args.export_dir + '/texti.txt', header=None, index=None, mode='a', encoding='utf-8')
+    
     # Breyta quite vs noise í flokkabreytu
     data['environment'] = data['environment'].apply(lambda x: '1' if 'Quiet' in x else 0)
     data['environment'] = data['environment'].astype('int64')

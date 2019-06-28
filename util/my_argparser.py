@@ -26,5 +26,7 @@ def create_parser():
         '--skip_noise', required=False, type=bool, help='filter out noisy data', default=False)
     parser.add_argument(
         '--skip_domains', required=False, type=bool, help='filter out domains')
-    
+    parser.add_argument(
+        '--save_corpus', required=False, type=bool, help='save text corpus', default=False)
+
     return parser
