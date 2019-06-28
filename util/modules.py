@@ -1,6 +1,7 @@
 import sys, os
 import numpy as np
 import pandas as pd
+import platform
 from imblearn.under_sampling import RandomUnderSampler
 from sklearn.model_selection import train_test_split
 
@@ -30,29 +31,64 @@ def filter_data(args, data):
         data = data.drop(filters)
 
     # Stilla ratio af noisy audio
-    if (args.noise_ratio):
+    #if (args.noise_ratio):
         # Beyta random under sampler á values
-        rus = RandomUnderSampler(sampling_strategy=args.noise_ratio, random_state=args.random_state)
-        data_res, _ = rus.fit_resample(data.values, data['environment'].values)
+        #rus = RandomUnderSampler(sampling_strategy=args.noise_ratio, random_state=args.random_state)
+        #data_res, _ = rus.fit_resample(data.values, data['environment'].values)
 
         # Breyta gögnum aftur í dataframe
-        data = pd.DataFrame(data_res, columns=column_names)
+        #data = pd.DataFrame(data_res, columns=column_names)
     
+    # Filtera út noisy data
+    if (args.skip_noise):
+        data = data.loc[data['environment'] == 1]
+
     # Stilla stærð gagnasetts í endann
     if (args.sample_size and len(data) > args.sample_size):
         data = data.sample(n=args.sample_size, random_state=args.random_state)
-
-    return data
+    
+    if (args.duration_hours and data['duration'].sum() > args.duration_hours):
+        data = data.sample(frac=1, random_state=args.random_state)
+        data = data.reset_index(drop=True)
+        seconds = args.duration_hours * 3600
+        sum = 0
+        for i, row in data.iterrows():
+            sum += row['duration']
+            if (sum > seconds):
+                newData = data.head(i+1)
+                break
+    
+    return newData
 
 def split_data(args, data):
     # Splita í train, val, test, halda hlutföllum af environment í settunum
-    if (len(data) < 100):
-        return data, data, data
-    
-    main, test = train_test_split(data, test_size=1-args.train_size, random_state=args.random_state, stratify=data['environment'])
-    train, val = train_test_split(main, test_size=args.val_size, random_state=args.random_state, stratify=main['environment'])
 
-    return train, val, test
+    # Ef 
+    if (len(data) == 1):
+        return data, data, data
+    elif (args.duration_hours):
+        seconds = args.duration_hours * 3600
+        train_seconds = seconds * args.train_size
+        val_seconds = train_seconds * args.val_size
+        sum = 0
+        for i, row in data.iterrows():
+            sum += row['duration']
+            if (sum > train_seconds):
+                train = data.head(i+1)
+                data.drop(data.head(i+1).index, inplace=True)
+                data = data.reset_index(drop=True)
+                sum = 0
+                for j, row in data.iterrows():
+                    sum += row['duration']
+                    if (sum > val_seconds):
+                        val = data.head(j+1)
+                        data.drop(data.head(j+1).index, inplace=True)
+                        test = data
+                        return train, val, test
+    else:
+        main, test = train_test_split(data, test_size=1-args.train_size, random_state=args.random_state, stratify=data['environment'])
+        train, val = train_test_split(main, test_size=args.val_size, random_state=args.random_state, stratify=main['environment'])
+        return train, val, test
 
 def format_data(args, data):
     # Búa til nýtt dataframe með þeim dálkum sem við þurfum
@@ -64,8 +100,9 @@ def format_data(args, data):
 
     # Laga path á audio files og reikna filesize
     for _, row in new_data.iterrows():
-        #row['wav_filename'] = row['wav_filename'].replace(":", "_")
-        row['wav_filename'] = args.wav_dir + '/' + row['wav_filename'] + '.wav'
+        if (platform.system() == 'Windows'):
+            row['wav_filename'] = row['wav_filename'].replace(":", "_")
+        row['wav_filename'] = os.path.join(args.wav_dir, row['wav_filename'] + '.wav')
         row['wav_filesize'] = os.path.getsize(row['wav_filename'])
 
     return new_data
@@ -73,4 +110,5 @@ def format_data(args, data):
 def export_csv(args, data, name):
     # Exporta í csv
     data = format_data(args, data)
+
     data.to_csv(args.export_dir + '/' + name + '.csv', encoding='utf-8', index=None, header=True)

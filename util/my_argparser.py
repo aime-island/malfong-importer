@@ -15,13 +15,15 @@ def create_parser():
     parser.add_argument(
         '--sample_size', required=False, type=int, help='size of sample')
     parser.add_argument(
+        '--duration_hours', required=False, type=float, help='size of dataset in hours')
+    parser.add_argument(
         '--random_state', required=False, type=int, help='seed for random shuffle')
     parser.add_argument(
         '--train_size', required=False, type=float, help='size of train set', default=0.7)
     parser.add_argument(
         '--val_size', required=False, type=float, help='size of val set', default=0.2)
     parser.add_argument(
-        '--noise_ratio', required=False, type=float, help='size of noisy data as a portion of quiet data')
+        '--skip_noise', required=False, type=bool, help='filter out noisy data', default=False)
     parser.add_argument(
         '--skip_domains', required=False, type=bool, help='filter out domains')
     
