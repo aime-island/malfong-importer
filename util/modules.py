@@ -28,12 +28,14 @@ def filter_data(args, data):
     # Sleppa setningum með . í (lénum)
     if (args.skip_domains):
         filters = data[data['transcript'].str.contains(r'\.')].index
-        searchfor = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0' ';', 'c']
+        searchfor = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
         filters2 = data[data['transcript'].str.contains('|'.join(searchfor))].index
         data = data.drop(filters)
         data = data.drop(filters2)
         filters3 = data[data['transcript'].str.contains(u'\ufeff')].index
         data = data.drop(filters3)
+        filters4 = data[data['transcript'].str.contains(u'\u003B')].index
+        data = data.drop(filters4)
 
     # Stilla ratio af noisy audio
     #if (args.noise_ratio):
