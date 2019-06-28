@@ -47,13 +47,13 @@ def filter_data(args, data):
     if (args.sample_size and len(data) > args.sample_size):
         data = data.sample(n=args.sample_size, random_state=args.random_state)
     
-    if (args.duration_seconds and data['duration'].sum() > args.duration_seconds):
+    if (args.duration and data['duration'].sum() > args.duration):
         data = data.sample(frac=1, random_state=args.random_state)
         data = data.reset_index(drop=True)
         sum = 0
         for i, row in data.iterrows():
             sum += row['duration']
-            if (sum > args.duration_seconds):
+            if (sum > args.duration):
                 newData = data.head(i+1)
                 break
     
@@ -65,8 +65,8 @@ def split_data(args, data):
     # Ef 
     if (len(data) == 1):
         return data, data, data
-    elif (args.duration_seconds):
-        train_seconds = args.duration_seconds * args.train_size
+    elif (args.duration):
+        train_seconds = args.duration * args.train_size
         val_seconds = train_seconds * args.val_size
         sum = 0
         for i, row in data.iterrows():
