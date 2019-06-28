@@ -15,7 +15,7 @@ def create_parser():
     parser.add_argument(
         '--sample_size', required=False, type=int, help='size of sample')
     parser.add_argument(
-        '--duration_hours', required=False, type=float, help='size of dataset in hours')
+        '--duration', required=False, type=float, help='size of dataset in seconds')
     parser.add_argument(
         '--random_state', required=False, type=int, help='seed for random shuffle')
     parser.add_argument(
