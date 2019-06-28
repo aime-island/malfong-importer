@@ -49,7 +49,7 @@ def filter_data(args, data):
     if (args.sample_size and len(data) > args.sample_size):
         data = data.sample(n=args.sample_size, random_state=args.random_state)
     
-    if (args.duration and data['duration'].sum() > args.duration):
+    elif (args.duration and data['duration'].sum() > args.duration):
         data = data.sample(frac=1, random_state=args.random_state)
         data = data.reset_index(drop=True)
         sum = 0
