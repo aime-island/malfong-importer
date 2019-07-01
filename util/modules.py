@@ -2,7 +2,6 @@ import sys, os
 import numpy as np
 import pandas as pd
 import platform
-from imblearn.under_sampling import RandomUnderSampler
 from sklearn.model_selection import train_test_split
 
 # Nöfn dálka í dataframe
@@ -25,7 +24,8 @@ def read_data(args):
     return data
     
 def filter_data(args, data):
-    # Sleppa setningum með . í (lénum)
+
+    # Sleppa setningum með filters
     if (args.skip_domains):
         filters = data[data['transcript'].str.contains(r'\.')].index
         searchfor = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
@@ -36,15 +36,6 @@ def filter_data(args, data):
         data = data.drop(filters3)
         filters4 = data[data['transcript'].str.contains(u'\u003B')].index
         data = data.drop(filters4)
-
-    # Stilla ratio af noisy audio
-    #if (args.noise_ratio):
-        # Beyta random under sampler á values
-        #rus = RandomUnderSampler(sampling_strategy=args.noise_ratio, random_state=args.random_state)
-        #data_res, _ = rus.fit_resample(data.values, data['environment'].values)
-
-        # Breyta gögnum aftur í dataframe
-        #data = pd.DataFrame(data_res, columns=column_names)
     
     # Filtera út noisy data
     if (args.skip_noise):
@@ -76,7 +67,7 @@ def split_data(args, data):
     if (len(data) == 1):
         return data, data, data
 
-    # Ef það er beðið um tíma, skipta í hlutfalli m.v. tíma
+    # Ef það var beðið um tímaskiptingu
     elif (args.duration):
         train_seconds = args.duration * args.train_size
         val_seconds = train_seconds * args.val_size
@@ -86,6 +77,7 @@ def split_data(args, data):
             if (sum > train_seconds):
                 train = data.head(i+1)
                 data.drop(data.head(i+1).index, inplace=True)
+                # Reset index fyrir rest
                 data = data.reset_index(drop=True)
                 sum = 0
                 for j, row in data.iterrows():
@@ -103,6 +95,7 @@ def split_data(args, data):
         return train, val, test
 
 def format_data(args, data):
+
     # Búa til nýtt dataframe með þeim dálkum sem við þurfum
     filesizes = np.zeros(len(data))
     new_data = pd.DataFrame(
@@ -112,7 +105,8 @@ def format_data(args, data):
 
     # Laga path á audio files og reikna filesize
     for _, row in new_data.iterrows():
-        if (platform.system() == 'Windows'):
+        # Ef ekki linux, þá laga filename
+        if (platform.system() != 'Linux'):
             row['wav_filename'] = row['wav_filename'].replace(":", "_")
         row['wav_filename'] = os.path.join(args.wav_dir, row['wav_filename'] + '.wav')
         row['wav_filesize'] = os.path.getsize(row['wav_filename'])
@@ -120,6 +114,7 @@ def format_data(args, data):
     return new_data
 
 def export_csv(args, data, name):
+
     # Exporta í csv
     data = format_data(args, data)
-    data.to_csv(args.export_dir + '/' + name + '.csv', encoding='utf-8-sig', index=None, header=True)
+    data.to_csv(os.path.join(args.export_dir, name + '.csv'), encoding='utf-8', index=None, header=True)
