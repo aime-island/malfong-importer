@@ -1,6 +1,5 @@
 from util.my_argparser import create_parser
-from util.modules import read_data, filter_data, split_data, export_csv
-import os
+from util.modules import read_data, filter_data, split_data, export_csv, export_corpus
 
 parser = create_parser()
 
@@ -13,22 +12,27 @@ def main():
     
     # Ef corpus er umbeðið
     if (args.save_corpus):
-        data['transcript'].to_csv(os.path.join(args.export_dir, 'text.txt'), header=False, index=False, mode='a', encoding='utf-8')
+        export_corpus(args, data)
     
     # Splitta data
     train, val, test = split_data(args, data)
-    print('Train duration', int(train['duration'].sum()))
-    print('Val duration', int(val['duration'].sum()))
-    print('Test duration', int(test['duration'].sum()))
-    print('...')
+    print('Train duration: %s seconds' %(int(train['duration'].sum())))
+    print('Val duration: %s seconds' %(int(val['duration'].sum())))
+    print('Test duration: %s seconds' %(int(test['duration'].sum())))
+    print('')
 
     # Exporta data
     export_csv(args, train, 'train')
     export_csv(args, val, 'val')
     export_csv(args, test, 'test')
-    print("Task done.")
-    print("")
-    print("Three files created at: ", args.export_dir)
+
+    # Log results
+    print('Task done.')
+    print('')
+    numfiles = 'Three'
+    if (args.save_corpus):
+        numfiles = 'Four'
+    print('%s files created at: %s' %(numfiles, args.export_dir))
 
 if __name__ == "__main__":
     args = parser.parse_args()

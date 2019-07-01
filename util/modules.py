@@ -40,8 +40,13 @@ def filter_data(args, data):
     # Filtera út noisy data
     if (args.skip_noise):
         data = data.loc[data['environment'] == 1]
+    
+    return data
 
-    # Stilla stærð gagnasetts í endann
+def split_data(args, data):
+    # Splita í train, val, test, halda hlutföllum af environment í settunum
+
+    # Stilla stærð gagnasetts
     if (args.sample_size and len(data) > args.sample_size):
         data = data.sample(n=args.sample_size, random_state=args.random_state)
     
@@ -57,11 +62,6 @@ def filter_data(args, data):
             if (sum > args.duration):
                 data = data.head(i+1)
                 break
-    
-    return data
-
-def split_data(args, data):
-    # Splita í train, val, test, halda hlutföllum af environment í settunum
 
     # Ef það er beðið um eina setningu skila eins í train, val og test
     if (len(data) == 1):
@@ -113,8 +113,13 @@ def format_data(args, data):
 
     return new_data
 
-def export_csv(args, data, name):
+def export_corpus(args, data):
+    transcript = data['transcript'].str.lower()
+    transcript.to_csv(os.path.join(args.export_dir, 'text.txt'), header=False, index=False, encoding='utf-8')
+    print('Text corpus generated with %s lines' %(len(transcript)))
+    print('')
 
+def export_csv(args, data, name):
     # Exporta í csv
     data = format_data(args, data)
     data.to_csv(os.path.join(args.export_dir, name + '.csv'), encoding='utf-8', index=None, header=True)
