@@ -25,18 +25,12 @@ def read_data(args):
     
 def filter_data(args, data):
 
-    # Sleppa setningum með filters
+    # Filtera út illegal characters
     if (args.skip_domains):
-        filters = data[data['transcript'].str.contains(r'\.')].index
-        searchfor = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
-        filters2 = data[data['transcript'].str.contains('|'.join(searchfor))].index
+        searchfor = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', r'\.', u'\ufeff', u'\u003B']
+        filters = data[data['transcript'].str.contains('|'.join(searchfor))].index
         data = data.drop(filters)
-        data = data.drop(filters2)
-        filters3 = data[data['transcript'].str.contains(u'\ufeff')].index
-        data = data.drop(filters3)
-        filters4 = data[data['transcript'].str.contains(u'\u003B')].index
-        data = data.drop(filters4)
-    
+
     # Filtera út noisy data
     if (args.skip_noise):
         data = data.loc[data['environment'] == 1]
@@ -121,5 +115,5 @@ def export_corpus(args, data):
 
 def export_csv(args, data, name):
     # Exporta í csv
-    data = format_data(args, data)
+    #data = format_data(args, data)
     data.to_csv(os.path.join(args.export_dir, name + '.csv'), encoding='utf-8', index=None, header=True)
