@@ -38,7 +38,7 @@ def filter_data(args, data):
     return data
 
 def split_data(args, data):
-    # Splita í train, val, test, halda hlutföllum af environment í settunum
+    # Splita í train, val, test
 
     # Stilla stærð gagnasetts
     if (args.sample_size and len(data) > args.sample_size):
@@ -64,13 +64,14 @@ def split_data(args, data):
     # Ef það var beðið um tímaskiptingu
     elif (args.duration):
         train_seconds = args.duration * args.train_size
-        val_seconds = train_seconds * args.val_size
+        val_seconds = args.duration * args.val_size
+        
         sum = 0
         for i, row in data.iterrows():
             sum += row['duration']
             if (sum > train_seconds):
                 train = data.head(i+1)
-                data.drop(data.head(i+1).index, inplace=True)
+                data.drop(train.index, inplace=True)
                 # Reset index fyrir rest
                 data = data.reset_index(drop=True)
                 sum = 0
@@ -115,5 +116,5 @@ def export_corpus(args, data):
 
 def export_csv(args, data, name):
     # Exporta í csv
-    #data = format_data(args, data)
+    data = format_data(args, data)
     data.to_csv(os.path.join(args.export_dir, name + '.csv'), encoding='utf-8', index=None, header=True)
