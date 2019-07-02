@@ -43,51 +43,46 @@ def split_data(args, data):
     # Stilla stærð gagnasetts
     if (args.sample_size and len(data) > args.sample_size):
         data = data.sample(n=args.sample_size, random_state=args.random_state)
+        # Ef það er beðið um eina setningu skila eins í train, val og test
+        if (len(data) == 1):
+            return data, data, data
+        
+    # Shuffla gögnunum með random state og reseta indexes
+    data = data.sample(frac=1, random_state=args.random_state)
+    data = data.reset_index(drop=True)
     
     # Stilla stærð gagnasetts miðað við tíma
-    elif (args.duration and data['duration'].sum() > args.duration):
-
-        # Shuffla gögnunum með random state og reseta indexes
-        data = data.sample(frac=1, random_state=args.random_state)
-        data = data.reset_index(drop=True)
+    if (args.duration and data['duration'].sum() > args.duration):
         sum = 0
         for i, row in data.iterrows():
             sum += row['duration']
             if (sum > args.duration):
                 data = data.head(i+1)
                 break
-
-    # Ef það er beðið um eina setningu skila eins í train, val og test
-    if (len(data) == 1):
-        return data, data, data
-
-    # Ef það var beðið um tímaskiptingu
-    elif (args.duration):
+        
         train_seconds = args.duration * args.train_size
         val_seconds = args.duration * args.val_size
-        
-        sum = 0
-        for i, row in data.iterrows():
-            sum += row['duration']
-            if (sum > train_seconds):
-                train = data.head(i+1)
-                data.drop(train.index, inplace=True)
-                # Reset index fyrir rest
-                data = data.reset_index(drop=True)
-                sum = 0
-                for j, row in data.iterrows():
-                    sum += row['duration']
-                    if (sum > val_seconds):
-                        val = data.head(j+1)
-                        data.drop(data.head(j+1).index, inplace=True)
-                        test = data
-                        return train, val, test
-    
-    # Ef það er ekki beðið um tímaskiptingu
+
     else:
-        main, test = train_test_split(data, test_size=1-args.train_size, random_state=args.random_state)
-        train, val = train_test_split(main, test_size=args.val_size, random_state=args.random_state)
-        return train, val, test
+        train_seconds = data['duration'].sum() * args.train_size
+        val_seconds = data['duration'].sum() * args.val_size
+        
+    sum = 0
+    for i, row in data.iterrows():
+        sum += row['duration']
+        if (sum > train_seconds):
+            train = data.head(i+1)
+            data.drop(train.index, inplace=True)
+            # Reset index fyrir rest
+            data = data.reset_index(drop=True)
+            sum = 0
+            for j, row in data.iterrows():
+                sum += row['duration']
+                if (sum > val_seconds):
+                    val = data.head(j+1)
+                    data.drop(data.head(j+1).index, inplace=True)
+                    test = data
+                    return train, val, test
 
 def format_data(args, data):
 
