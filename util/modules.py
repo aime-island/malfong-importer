@@ -35,6 +35,9 @@ def filter_data(args, data):
     if (args.skip_noise):
         data = data.loc[data['environment'] == 1]
     
+    # Filtera út 11 sek+ brot
+    data = data.loc[data['duration'] < 11]
+
     return data
 
 def split_data(args, data):

@@ -16,10 +16,13 @@ def main():
     
     # Splitta data
     train, val, test = split_data(args, data)
-    print('Train duration: %s seconds' %(int(train['duration'].sum())))
-    print('Val duration: %s seconds' %(int(val['duration'].sum())))
-    print('Test duration: %s seconds' %(int(test['duration'].sum())))
-    print('')
+    print('Train duration: %s seconds, max value: %s seconds' 
+        %(int(train['duration'].sum()), train['duration'].max()))
+    print('Val duration: %s seconds, max value: %s seconds' 
+        %(int(val['duration'].sum()), val['duration'].max()))
+    print('Test duration: %s seconds, max value: %s seconds' 
+        %(int(test['duration'].sum()), test['duration'].max()))
+    print('\n Calculating... \n')
 
     # Exporta data
     export_csv(args, train, 'train')
@@ -27,8 +30,8 @@ def main():
     export_csv(args, test, 'test')
 
     # Log results
-    print('Task done.')
-    print('')
+    print('Task done. \n')
+
     numfiles = 'Three'
     if (args.save_corpus):
         numfiles = 'Four'
