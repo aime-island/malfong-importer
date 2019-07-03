@@ -35,8 +35,8 @@ def filter_data(args, data):
     if (args.skip_noise):
         data = data.loc[data['environment'] == 1]
     
-    # Filtera út 11 sek+ brot
-    data = data.loc[data['duration'] < 11]
+    # Filtera út löng hljóðbrot
+    data = data.loc[data['duration'] < args.max_duration]
 
     return data
 

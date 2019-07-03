@@ -17,6 +17,8 @@ def create_parser():
     parser.add_argument(
         '--duration', required=False, type=float, help='size of dataset in seconds')
     parser.add_argument(
+        '--max_duration', required=False, type=float, help='max sample duration', default=15)
+    parser.add_argument(
         '--random_state', required=False, type=int, help='seed for random shuffle')
     parser.add_argument(
         '--train_size', required=False, type=float, help='size of train set', default=0.7)
