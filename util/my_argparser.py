@@ -30,5 +30,9 @@ def create_parser():
         '--skip_domains', required=False, type=bool, help='filter out domains')
     parser.add_argument(
         '--save_corpus', required=False, type=bool, help='save text corpus', default=False)
+    parser.add_argument(
+        '--skip_duplicates', required=False, type=bool, help='use each sentence only once', default=False)
+    parser.add_argument(
+        '--skip_single_words', required=False, type=bool, help='skip single word sentences', default=False)
 
     return parser

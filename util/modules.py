@@ -38,6 +38,14 @@ def filter_data(args, data):
     # Filtera út löng hljóðbrot
     data = data.loc[data['duration'] < args.max_duration]
 
+    # Filtera út duplicates, eyðir öllu nema fyrsta occurance út
+    if (args.skip_duplicates):
+        data = data.drop_duplicates(subset='transcript')
+
+    # Filtera út setningar með bara eitt orð
+    if (args.skip_single_words):
+        data = data[data['transcript'].str.contains(' ')]
+        
     return data
 
 def split_data(args, data):
