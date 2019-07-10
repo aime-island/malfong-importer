@@ -7,15 +7,11 @@ def create_parser():
         formatter_class=argparse.MetavarTypeHelpFormatter)
 
     parser.add_argument(
-        '--input_file', required=True, type=str, help='path to input file')
+        '--malromur_dir', required=True, type=str, help='path to malromur')
     parser.add_argument(
         '--export_dir', required=True, type=str, help='path to export directory')
     parser.add_argument(
-        '--wav_dir', required=True, type=str, help='path to wav directory')
-    parser.add_argument(
-        '--sample_size', required=False, type=int, help='size of sample')
-    parser.add_argument(
-        '--duration', required=False, type=float, help='size of dataset in seconds')
+        '--duration', required=False, type=int, help='size of dataset in seconds')
     parser.add_argument(
         '--max_duration', required=False, type=float, help='max sample duration', default=15)
     parser.add_argument(
@@ -34,5 +30,9 @@ def create_parser():
         '--skip_duplicates', required=False, type=bool, help='use each sentence only once', default=False)
     parser.add_argument(
         '--skip_single_words', required=False, type=bool, help='skip single word sentences', default=False)
+    parser.add_argument(
+        '--augment', required=False, type=float, help='size of train set to augment')
+    parser.add_argument(
+        '--augment_seed', required=False, type=int, help='random state for what to augment')
 
     return parser

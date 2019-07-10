@@ -2,3 +2,6 @@
 argparse
 pandas
 numpy
+enlighten
+soundfile
+librosa

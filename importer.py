@@ -1,5 +1,7 @@
-from util.my_argparser import create_parser
-from util.modules import read_data, filter_data, split_data, export_csv, export_corpus
+from util.argparser import create_parser
+from util.modules import (read_data, filter_data, sample,
+    split_data, export_csv, export_corpus, make_dirs, format_data)
+from util.augmentation import augment_data
 
 parser = create_parser()
 
@@ -10,19 +12,32 @@ def main():
     # Filtera data
     data = filter_data(args, data)
     
-    # Ef corpus er umbeðið
+    # Vista texta málheild
     if (args.save_corpus):
         export_corpus(args, data)
-    
+
+    # Random shuffla og stilla stærð
+    data = sample(args, data)
+
+    # Formatta data
+    data = format_data(args, data)
+
     # Splitta data
     train, val, test = split_data(args, data)
-    print('Train duration: %s seconds, max value: %s seconds' 
-        %(int(train['duration'].sum()), train['duration'].max()))
+
+    if (args.augment):
+        train, aug_duration = augment_data(args, train)
+    
+    # Búa til directories
+    make_dirs(args)
+
+    print('\n')
+    print('Train duration: %s seconds, including %s augmented' 
+        %(int(train['duration'].sum()), int(aug_duration)))
     print('Val duration: %s seconds, max value: %s seconds' 
         %(int(val['duration'].sum()), val['duration'].max()))
     print('Test duration: %s seconds, max value: %s seconds' 
         %(int(test['duration'].sum()), test['duration'].max()))
-    print('\n Calculating... \n')
 
     # Exporta data
     export_csv(args, train, 'train')
