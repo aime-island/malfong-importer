@@ -25,6 +25,8 @@ def main():
     # Splitta data
     train, val, test = split_data(args, data)
 
+    # Augmenta data
+    aug_duration = 0.0
     if (args.augment):
         train, aug_duration = augment_data(args, train)
     

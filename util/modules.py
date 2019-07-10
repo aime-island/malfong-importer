@@ -61,13 +61,14 @@ def sample(args, data, augmentation=False):
     data = data.reset_index(drop=True)
     
     # Stilla stærð gagnasetts í sekúndum
-    if (data['duration'].sum() > duration):
-        sum = 0
-        for i, row in data.iterrows():
-            sum += row['duration']
-            if (sum > duration):
-                data = data.head(i+1)
-                break
+    if (duration):
+        if (data['duration'].sum() > duration):
+            sum = 0
+            for i, row in data.iterrows():
+                sum += row['duration']
+                if (sum > duration):
+                    data = data.head(i+1)
+                    break
 
     return data
 
