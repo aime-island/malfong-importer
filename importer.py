@@ -25,13 +25,13 @@ def main():
     # Splitta data
     train, val, test = split_data(args, data)
 
+    # Búa til directories
+    make_dirs(args)
+
     # Augmenta data
     aug_duration = 0.0
     if (args.augment):
         train, aug_duration = augment_data(args, train)
-    
-    # Búa til directories
-    make_dirs(args)
 
     print('\n')
     print('Train duration: %s seconds, including %s augmented' 
