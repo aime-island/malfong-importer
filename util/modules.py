@@ -132,4 +132,4 @@ def export_corpus(args, data):
 
 def export_csv(args, data, name):
     # Exporta í csv
-    data.to_csv(os.path.join(args.export_dir, name + '.csv'), encoding='utf-8', index=None, header=True)
+    data.to_csv(os.path.join(args.export_dir, name + '.csv'), columns=['wav_filename', 'wav_filesize', 'transcript'], encoding='utf-8', index=None, header=True)
