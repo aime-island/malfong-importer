@@ -9,9 +9,12 @@ def main():
     # Lesa inn data
     data = read_data(args)
 
+    print('Reading data.. \n')
+
     # Filtera data
     data = filter_data(args, data)
-    
+
+    print('Filtering data.. \n')
     # Vista texta málheild
     if (args.save_corpus):
         export_corpus(args, data)
@@ -38,21 +41,25 @@ def main():
         %(int(train['duration'].sum()), int(aug_duration)))
     print('Val duration: %s seconds, max value: %s seconds' 
         %(int(val['duration'].sum()), val['duration'].max()))
-    print('Test duration: %s seconds, max value: %s seconds' 
+    print('Test duration: %s seconds, max value: %s seconds \n' 
         %(int(test['duration'].sum()), test['duration'].max()))
-
+    print('Longest duration: %s seconds \n'
+        %(max([train['duration'].max(), 
+        val['duration'].max(), 
+        test['duration'].max()])))
     # Exporta data
     export_csv(args, train, 'train')
     export_csv(args, val, 'val')
     export_csv(args, test, 'test')
 
     # Log results
-    print('Task done. \n')
 
     numfiles = 'Three'
     if (args.save_corpus):
         numfiles = 'Four'
-    print('%s files created at: %s' %(numfiles, args.export_dir))
+    print('%s files created at: %s \n' %(numfiles, args.export_dir))
+    print('Task done.')
+
 
 if __name__ == "__main__":
     args = parser.parse_args()
