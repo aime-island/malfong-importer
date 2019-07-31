@@ -2,10 +2,18 @@ import soundfile as sf
 import librosa as lb
 import pandas as pd
 import random
+import numpy as np
 import os
 from util.modules import sample
 import time
 import enlighten
+
+""" def manipulate(data, noise_factor):
+    noise = np.random.randn(len(data))
+    augmented_data = data + noise_factor * noise
+    # Cast back to same data type
+    augmented_data = augmented_data.astype(type(data[0]))
+    return augmented_data """
 
 def manipulate(file, shift):
     # Breyta pitch
@@ -23,7 +31,7 @@ def augment_data(args, data):
 
     random.seed(args.augment_seed)
 
-    shifts = [random.randint(1, 10) for _ in range (len(data_augment))]
+    shifts = [random.randint(1, 5) for _ in range (len(data_augment))]
     
     pbar = enlighten.Counter(total=len(data_augment), desc='Augmenting train set')
 

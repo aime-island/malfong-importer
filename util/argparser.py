@@ -34,5 +34,10 @@ def create_parser():
         '--augment', required=False, type=float, help='size of train set to augment')
     parser.add_argument(
         '--augment_seed', required=False, type=int, help='random state for what to augment')
-
+    parser.add_argument(
+        '--ru_split', required=False, type=bool, help='train test splits like tala.ru.is', default=False)
+    parser.add_argument(
+        '--convert_domains', required=False, type=bool, help='convert domain names to name punktur domain', default=False)
+    parser.add_argument(
+        '--only_correct', required=False, type=bool, help='only use utterances from correct folder', default=False)
     return parser

@@ -10,11 +10,12 @@ def main():
     data = read_data(args)
 
     print('Reading data.. \n')
+    
+    if not args.ru_split:
+        # Filtera data
+        data = filter_data(args, data)
 
-    # Filtera data
-    data = filter_data(args, data)
-
-    print('Filtering data.. \n')
+    print('Filtering data.. \n \n')
     # Vista texta málheild
     if (args.save_corpus):
         export_corpus(args, data)
@@ -22,11 +23,13 @@ def main():
     # Random shuffla og stilla stærð
     data = sample(args, data)
 
-    # Formatta data
-    data = format_data(args, data)
-
     # Splitta data
     train, val, test = split_data(args, data)
+    
+    # Formatta data
+    train = format_data(args, train)
+    val = format_data(args, val)
+    test = format_data(args, test)
 
     # Búa til directories
     make_dirs(args)
