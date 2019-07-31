@@ -45,7 +45,8 @@ def filter_data(args, data):
         data = data.loc[data['environment'] == 1]
     
     # Filtera út löng hljóðbrot
-    data = data.loc[data['duration'] < args.max_duration]
+    if args.max_duration:
+        data = data.loc[data['duration'] < args.max_duration]
 
     # Filtera út duplicates, eyðir öllu nema fyrsta occurance út
     if (args.skip_duplicates):
@@ -87,6 +88,7 @@ def split_data(args, data):
     if args.ru_split:
         main, test = ru_split(args, data)
         main = filter_data(args, main)
+        test = filter_data(args, test)
         train_seconds = main['duration'].sum() * args.train_size
         data = main
     else:
