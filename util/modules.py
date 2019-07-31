@@ -88,10 +88,11 @@ def split_data(args, data):
         main, test = ru_split(args, data)
         main = filter_data(args, main)
         train_seconds = main['duration'].sum() * args.train_size
+        data = main
     else:
         train_seconds = data['duration'].sum() * args.train_size
         val_seconds = data['duration'].sum() * args.val_size
-        
+    
     sum = 0
     for i, row in data.iterrows():
         sum += row['duration']
