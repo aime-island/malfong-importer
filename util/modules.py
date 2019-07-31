@@ -31,17 +31,10 @@ def filter_data(args, data):
     if args.only_correct:
         data = data.loc[data['classification'] == 'correct']
     
-    # Filtera út illegal characters
-    searchfor = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', u'\ufeff', u'\u003B']
-    filters = data[data['transcript'].str.contains('|'.join(searchfor))].index
-    data = data.drop(filters)
-    
-    def parse_domain(tran):
-        splits = tran.split('.' , 1)
-        return splits[0] + ' punktur ' + splits[1]
-
-    if (args.convert_domains):
-        data['transcript'] = data['transcript'].apply(lambda x: parse_domain(x) if r'.' in x else x)
+    if (args.skip_domains):
+        searchfor = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', r'\.', u'\ufeff', u'\u003B']
+        filters = data[data['transcript'].str.contains('|'.join(searchfor))].index
+        data = data.drop(filters)
 
     # Filtera út noisy data
 
