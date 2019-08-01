@@ -103,6 +103,7 @@ def split_data(args, data):
         val_seconds = data['duration'].sum() * args.val_size
     
     sum = 0
+    data = data.reset_index(drop=True)
     for i, row in data.iterrows():
         sum += row['duration']
         if (sum > train_seconds):
