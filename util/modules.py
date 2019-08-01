@@ -19,12 +19,6 @@ def read_data(args):
 
     return data
 
-def ru_split(args, data):
-    test_all = pd.read_csv('./resources/test_all_lrec2018', delim_whitespace=True, usecols=[0], names=['filename'])
-    ru_test = data[data['name'].isin(test_all['filename'])]
-    ru_train = data.drop(ru_test.index)
-    return ru_train, ru_test
-
 def filter_data(args, data):
 
     # Nota bara efni úr correct
@@ -82,6 +76,13 @@ def sample(args, data, augmentation=False):
                     break
 
     return data
+
+def ru_split(args, data):
+    test_all = pd.read_csv('./resources/test_all_lrec2018', delim_whitespace=True, usecols=[0], names=['filename'])
+    ru_test = data[data['name'].isin(test_all['filename'])]
+    data.drop(ru_test.index, inplace=True)
+    data = data.reset_index(drop=True)
+    return data, ru_test
 
 def split_data(args, data):
     # Splita í train, val, test
