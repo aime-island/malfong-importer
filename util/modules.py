@@ -19,11 +19,12 @@ def read_data(args):
 
     return data
 
-def filter_data(args, data):
+def filter_data(args, data, is_test=False):
 
     # Nota bara efni úr correct
     if args.only_correct:
-        data = data.loc[data['classification'] == 'correct']
+        if not is_test:
+            data = data.loc[data['classification'] == 'correct']
     
     if (args.skip_domains):
         searchfor = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', r'\.', u'\ufeff', u'\u003B']
@@ -80,8 +81,9 @@ def sample(args, data, augmentation=False):
 def ru_split(args, data):
     test_all = pd.read_csv(
         './resources/test_all_lrec2018',
-        delim_whitespace=True, usecols=[0],
-        names=['filename'], encoding='utf-8')
+        delim_whitespace=True,
+        names=['filename', 'transcript'], 
+        encoding='utf-8')
     ru_test = data[data['name'].isin(test_all['filename'])]
     ru_test = ru_test.reset_index(drop=True)
     data.drop(ru_test.index, inplace=True)
@@ -93,7 +95,7 @@ def split_data(args, data):
     if args.ru_split:
         main, test = ru_split(args, data)
         main = filter_data(args, main)
-        test = filter_data(args, test)
+        test = filter_data(args, test, True)
         train_seconds = main['duration'].sum() * args.train_size
         data = main
     else:
