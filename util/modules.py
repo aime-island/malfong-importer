@@ -78,8 +78,12 @@ def sample(args, data, augmentation=False):
     return data
 
 def ru_split(args, data):
-    test_all = pd.read_csv('./resources/test_all_lrec2018', delim_whitespace=True, usecols=[0], names=['filename'])
+    test_all = pd.read_csv(
+        './resources/test_all_lrec2018',
+        delim_whitespace=True, usecols=[0],
+        names=['filename'], encoding='utf-8')
     ru_test = data[data['name'].isin(test_all['filename'])]
+    ru_test = ru_test.reset_index(drop=True)
     data.drop(ru_test.index, inplace=True)
     data = data.reset_index(drop=True)
     return data, ru_test
